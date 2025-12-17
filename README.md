@@ -41,11 +41,9 @@ The project is built as a responsive Single Page Application (SPA), ensuring a s
 
 ## 📸 Screenshots
 
-![alt text](<src/assets/Screenshot 2025-12-15 143244.png>)
-
-![alt text](<src/assets/Screenshot 2025-12-15 143308.png>)
-
-![alt text](<src/assets/Screenshot 2025-12-15 143330.png>)
+![Dashboad] (<src/assets/Dashboad Screen.png>)
+![HomeScreen] (<src/assets/Home Screen.png>)
+![ProfilePage] (<src/assets/Profile Page.png>)
 
 ---
 
@@ -57,4 +55,4 @@ The project is built as a responsive Single Page Application (SPA), ensuring a s
 
 * LinkedIn: [Jonathan Ntim](https://www.linkedin.com/in/jonathan-ntim-3140a5364)
 
-Project Link: [https://github.com/JonathanD250/capstone-project-fitness-tracker.git](https://github.com/JonathanD250/capstone-project-fitness-tracker.git)
+Project Link: [https://github.com/JonathanD250/capstone-project-fitness-tracker.git](https://github.com/JonathanD250/capstone-project-fitness-tracker.git)S
