@@ -41,9 +41,9 @@ The project is built as a responsive Single Page Application (SPA), ensuring a s
 
 ## 📸 Screenshots
 
-![Dashboad] (<src/assets/Dashboad Screen.png>)
-![HomeScreen] (<src/assets/Home Screen.png>)
-![ProfilePage] (<src/assets/Profile Page.png>)
+![Dashboad](<src/assets/Dashboad Screen.png>)
+![HomeScreen](<src/assets/Home Screen.png>)
+![ProfilePage](<src/assets/Profile Page.png>)
 
 ---
 
