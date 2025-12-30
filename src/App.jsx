@@ -8,10 +8,20 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-900 text-white pb-24 font-sans relative">
       
-      {/* Background Gradient */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/60 to-slate-900/90 z-0 pointer-events-none"></div>
+      {/* 1. Background Image Layer */}
+      <div className="fixed inset-0 z-0">
+        <img 
+          src="/bg.png"
+          alt="Fitness Background" 
+          className="w-full h-full object-cover opacity-50"
+          onError={(e) => {e.target.style.display='none'}} 
+        />
+      </div>
 
-      {/* Main Content (Z-index 10) */}
+      {/* 2. Gradient Overlay Layer */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-slate-900/80 to-slate-900 z-0 pointer-events-none"></div>
+
+      {/* 3. Main Content Layer */}
       <div className="relative z-10">
         <Routes>
           <Route path="/" element={<Dashboard />} />
