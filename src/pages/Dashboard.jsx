@@ -1,4 +1,5 @@
-import { MapPin, Clock, Flame, Award, Plus, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MapPin, Clock, Flame, Plus } from 'lucide-react';
 
 const Dashboard = () => {
   return (
@@ -20,20 +21,19 @@ const Dashboard = () => {
         {/* Weekly Stats Card */}
         <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 border border-white/5 flex justify-between items-center">
             <div className="flex space-x-4">
-                <h3 className="text-1xl font-bold mb-1">Weekly Stats</h3>
                 {/* Icons */}
                 <div className="bg-white/10 p-2 rounded-full"><MapPin size={20} className="text-white"/></div>
                 <div className="bg-white/10 p-2 rounded-full"><Clock size={20} className="text-white"/></div>
                 <div className="bg-white/10 p-2 rounded-full"><Flame size={20} className="text-white"/></div>
             </div>
             
-            {/* Add New Task Button */}
-            <button className="flex flex-col items-center justify-center text-xs text-white">
+            {/* Add New Task Button - NOW A LINK */}
+            <Link to="/add-workout" className="flex flex-col items-center justify-center text-xs text-white hover:opacity-80 transition">
                 <div className="bg-white text-black rounded-full w-10 h-10 flex items-center justify-center mb-1">
                     <Plus size={24} strokeWidth={3} />
                 </div>
                 <span>Add Task</span>
-            </button>
+            </Link>
         </div>
       </div>
 

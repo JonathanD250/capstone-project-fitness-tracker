@@ -1,3 +1,4 @@
+import AddWorkout from './pages/AddWorkout';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
@@ -24,6 +25,7 @@ function App() {
       {/* 3. Main Content Layer */}
       <div className="relative z-10">
         <Routes>
+          <Route path="/add-workout" element={<AddWorkout />} />
           <Route path="/" element={<Dashboard />} />
           <Route path="/history" element={<History />} />
           <Route path="/profile" element={<Profile />} />
