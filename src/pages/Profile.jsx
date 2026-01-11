@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Settings, Bell, Shield, LogOut, 
@@ -11,14 +11,40 @@ const Profile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null); 
 
-  const user = {
-    name: "Jonathan Cole",
-    email: "colej@gmail.com",
-    phone: "+233234567891",
-    image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=1000&auto=format&fit=crop"
+  // --- STATE: LOAD FROM LOCAL STORAGE OR USE DEFAULT ---
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('userProfile');
+    return savedUser ? JSON.parse(savedUser) : {
+      name: "Jonathan Cole",
+      email: "colej@gmail.com",
+      phone: "+233234567891",
+      age: "26",
+      weight: "78",
+      height: "180",
+      image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=1000&auto=format&fit=crop"
+    };
+  });
+
+  // Function to handle saving changes
+  const handleSaveProfile = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    
+    const updatedUser = {
+      ...user,
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      age: formData.get('age'),
+      weight: formData.get('weight'),
+      height: formData.get('height'),
+    };
+
+    setUser(updatedUser);
+    localStorage.setItem('userProfile', JSON.stringify(updatedUser)); // Save to storage
+    setActiveModal(null); // Close modal
   };
 
-  // --- EDUCATIONAL CONTENT DATA ---
   const eduContent = {
     water: {
       title: "Hydration 101",
@@ -54,13 +80,11 @@ const Profile = () => {
     }
   };
 
-  // --- MODAL RENDERER ---
   const renderModalContent = () => {
     if (eduContent[activeModal]) {
       const content = eduContent[activeModal];
       return (
         <div className="space-y-4">
-           {/* Header Image */}
            <div className="h-40 w-full rounded-2xl overflow-hidden mb-4 relative shadow-md">
               <img src={content.image} alt={content.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
@@ -92,13 +116,39 @@ const Profile = () => {
     switch(activeModal) {
       case 'edit':
         return (
-          <div className="space-y-4">
+          // WRAP IN FORM TO HANDLE SUBMIT
+          <form onSubmit={handleSaveProfile} className="space-y-4">
             <h3 className="text-xl font-bold mb-4 text-black">Edit Profile</h3>
-            <input type="text" defaultValue={user.name} className="w-full p-3 border rounded-xl text-black" placeholder="Full Name"/>
-            <input type="email" defaultValue={user.email} className="w-full p-3 border rounded-xl text-black" placeholder="Email"/>
-            <input type="tel" defaultValue={user.phone} className="w-full p-3 border rounded-xl text-black" placeholder="Phone"/>
-            <button className="w-full bg-green-500 text-white py-3 rounded-xl font-bold mt-4" onClick={() => setActiveModal(null)}>Save Changes</button>
-          </div>
+            
+            <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500">Personal Info</label>
+                <input name="name" type="text" defaultValue={user.name} className="w-full p-3 border rounded-xl text-black bg-gray-50" placeholder="Full Name" required/>
+                <input name="email" type="email" defaultValue={user.email} className="w-full p-3 border rounded-xl text-black bg-gray-50" placeholder="Email" required/>
+                <input name="phone" type="tel" defaultValue={user.phone} className="w-full p-3 border rounded-xl text-black bg-gray-50" placeholder="Phone" required/>
+            </div>
+
+            <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500">Body Stats</label>
+                <div className="flex gap-2">
+                    <div className="w-1/3">
+                        <input name="age" type="number" defaultValue={user.age} className="w-full p-3 border rounded-xl text-black bg-gray-50" placeholder="Age" />
+                        <span className="text-[10px] text-gray-400 ml-1">Age</span>
+                    </div>
+                    <div className="w-1/3">
+                        <input name="weight" type="number" defaultValue={user.weight} className="w-full p-3 border rounded-xl text-black bg-gray-50" placeholder="Kg" />
+                        <span className="text-[10px] text-gray-400 ml-1">Weight (kg)</span>
+                    </div>
+                    <div className="w-1/3">
+                        <input name="height" type="number" defaultValue={user.height} className="w-full p-3 border rounded-xl text-black bg-gray-50" placeholder="Cm" />
+                        <span className="text-[10px] text-gray-400 ml-1">Height (cm)</span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" className="w-full bg-green-500 text-white py-3 rounded-xl font-bold mt-4 hover:bg-green-600 transition">
+                Save Changes
+            </button>
+          </form>
         );
       case 'notifications':
         return (
@@ -155,7 +205,6 @@ const Profile = () => {
              <ArrowLeft size={32} />
         </button>
         
-        {/* SETTINGS BUTTON (MOVED HERE) */}
         <div className="relative">
              <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -166,7 +215,6 @@ const Profile = () => {
                 </div>
              </button>
 
-             {/* DROPDOWN MENU */}
              {isDropdownOpen && (
                 <div className="absolute top-12 right-0 w-64 bg-slate-800/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
                     {[
@@ -198,13 +246,33 @@ const Profile = () => {
              <div className="w-28 h-28 rounded-full border-2 border-white p-1 overflow-hidden">
                 <img src={user.image} alt="Profile" className="w-full h-full rounded-full object-cover" />
              </div>
-             <div className="absolute bottom-0 right-0 bg-green-500 p-1.5 rounded-full border-2 border-black text-black">
+             {/* Edit Button also opens modal now */}
+             <button 
+                onClick={() => setActiveModal('edit')}
+                className="absolute bottom-0 right-0 bg-green-500 p-1.5 rounded-full border-2 border-black text-black hover:scale-110 transition cursor-pointer"
+             >
                 <Edit2 size={14} />
-             </div>
+             </button>
         </div>
         <h2 className="text-2xl font-bold text-white mb-1">{user.name}</h2>
         <p className="text-gray-300 text-sm font-light">{user.email}</p>
         <p className="text-gray-300 text-sm font-light">{user.phone}</p>
+        
+        {/* PHYSICAL STATS DISPLAY */}
+        <div className="flex gap-4 mt-4">
+             <div className="bg-white/10 px-4 py-2 rounded-xl text-center backdrop-blur-sm">
+                 <span className="block font-bold text-white">{user.age}</span>
+                 <span className="text-[10px] text-gray-400 uppercase">Age</span>
+             </div>
+             <div className="bg-white/10 px-4 py-2 rounded-xl text-center backdrop-blur-sm">
+                 <span className="block font-bold text-white">{user.weight}kg</span>
+                 <span className="text-[10px] text-gray-400 uppercase">Weight</span>
+             </div>
+             <div className="bg-white/10 px-4 py-2 rounded-xl text-center backdrop-blur-sm">
+                 <span className="block font-bold text-white">{user.height}cm</span>
+                 <span className="text-[10px] text-gray-400 uppercase">Height</span>
+             </div>
+        </div>
       </div>
 
       {/* 3. The Interactive Bento Grid */}
