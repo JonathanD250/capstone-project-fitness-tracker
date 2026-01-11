@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, Dumbbell, Trash2, ArrowLeft, Share2 } from 'lucide-react';
+import { 
+  Calendar, 
+  Clock, 
+  Dumbbell, 
+  Trash2, 
+  ArrowLeft, 
+  Share2,
+  Weight as WeightIcon
+} from 'lucide-react';
 
 const History = () => {
   const [history, setHistory] = useState([]);
@@ -14,7 +22,7 @@ const History = () => {
   const shareWorkout = (workout) => {
     const text = `🏋️‍♂️ *Workout Crushed!* %0A%0A` +
                  `Exercise: *${workout.exercise}*%0A` +
-                 `Details: ${workout.sets} Sets x ${workout.reps} Reps%0A` +
+                 `Details: ${workout.sets} Sets x ${workout.reps} Reps @ ${workout.weight || 0}kg%0A` +
                  `Date: ${workout.date}%0A%0A` +
                  `Logged via My Fitness Tracker 🚀`;
     
@@ -22,7 +30,7 @@ const History = () => {
   };
 
   const clearHistory = () => {
-    if(window.confirm("Are you sure you want to delete all logs?")) {
+    if(window.confirm("Are you sure you want to delete all logs? This cannot be undone.")) {
       localStorage.removeItem('workoutHistory');
       setHistory([]);
     }
@@ -31,7 +39,7 @@ const History = () => {
   return (
     <div className="p-6 pb-24 min-h-screen text-white">
       
-      {/* --- HEADER WITH BACK ARROW --- */}
+      {/* --- HEADER --- */}
       <div className="flex items-center gap-4 mb-8 mt-4">
         <Link to="/" className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition text-white">
             <ArrowLeft size={24} />
@@ -63,33 +71,41 @@ const History = () => {
             </div>
         ) : (
             history.map((workout) => (
-                <div key={workout.id} className="bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/5 shadow-lg">
-                    <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-xl font-bold text-white capitalize">
+                <div key={workout.id} className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/5 shadow-lg">
+                    {/* Top Row: Exercise Name & Date */}
+                    <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-xl font-bold text-white capitalize leading-tight max-w-[70%]">
                             {workout.exercise}
                         </h3>
-                        <div className="flex items-center text-xs text-gray-400 gap-1 bg-black/20 px-2 py-1 rounded-lg">
-                            <Calendar size={12} />
+                        <div className="flex items-center text-[10px] text-gray-400 gap-1 bg-black/20 px-2 py-1 rounded-lg">
+                            <Calendar size={10} />
                             <span>{workout.date}</span>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    {/* Stats Row */}
+                    <div className="flex items-center gap-4">
                         <div className="flex flex-col">
-                            <span className="text-xs text-gray-400 uppercase tracking-wider">Sets</span>
+                            <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Sets</span>
                             <span className="text-lg font-mono font-bold text-green-400">{workout.sets}</span>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xs text-gray-400 uppercase tracking-wider">Reps</span>
+                            <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Reps</span>
                             <span className="text-lg font-mono font-bold text-blue-400">{workout.reps}</span>
                         </div>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Weight</span>
+                            <span className="text-lg font-mono font-bold text-orange-400">
+                                {workout.weight || 0}<span className="text-xs ml-0.5">kg</span>
+                            </span>
+                        </div>
                         
+                        {/* Right Side: Time & Share */}
                         <div className="flex flex-col ml-auto items-end gap-2">
-                             <div className="flex items-center gap-1 text-xs text-gray-500">
-                                <Clock size={12} />
+                             <div className="flex items-center gap-1 text-[10px] text-gray-500">
+                                <Clock size={10} />
                                 {workout.time}
                              </div>
-                             {/* SHARE BUTTON */}
                              <button 
                                 onClick={() => shareWorkout(workout)}
                                 className="flex items-center gap-2 bg-green-500/10 text-green-500 px-3 py-1.5 rounded-full hover:bg-green-500 hover:text-white transition-all text-xs font-bold"
