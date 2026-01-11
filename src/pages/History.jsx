@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Calendar, 
-  Clock, 
-  Dumbbell, 
-  Trash2, 
-  ArrowLeft, 
-  Share2 
-} from 'lucide-react';
+import { Calendar, Clock, Dumbbell, Trash2, ArrowLeft, Share2 } from 'lucide-react';
 
 const History = () => {
   const [history, setHistory] = useState([]);
@@ -29,14 +22,14 @@ const History = () => {
   };
 
   const clearHistory = () => {
-    if(confirm("Are you sure you want to delete all logs?")) {
+    if(window.confirm("Are you sure you want to delete all logs?")) {
       localStorage.removeItem('workoutHistory');
       setHistory([]);
     }
   };
 
   return (
-    <div className="p-6 pb-24 min-h-screen">
+    <div className="p-6 pb-24 min-h-screen text-white">
       
       {/* --- HEADER WITH BACK ARROW --- */}
       <div className="flex items-center gap-4 mb-8 mt-4">
@@ -45,7 +38,7 @@ const History = () => {
         </Link>
         
         <div className="flex-1">
-            <h1 className="text-2xl font-bold text-white">History</h1>
+            <h1 className="text-2xl font-bold">History</h1>
             <p className="text-gray-400 text-xs">Your fitness journey</p>
         </div>
 
@@ -70,7 +63,7 @@ const History = () => {
             </div>
         ) : (
             history.map((workout) => (
-                <div key={workout.id} className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/5 shadow-lg">
+                <div key={workout.id} className="bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/5 shadow-lg">
                     <div className="flex justify-between items-start mb-3">
                         <h3 className="text-xl font-bold text-white capitalize">
                             {workout.exercise}
@@ -91,12 +84,12 @@ const History = () => {
                             <span className="text-lg font-mono font-bold text-blue-400">{workout.reps}</span>
                         </div>
                         
-                        {/* --- SHARE BUTTON NEXT TO STATS --- */}
                         <div className="flex flex-col ml-auto items-end gap-2">
                              <div className="flex items-center gap-1 text-xs text-gray-500">
                                 <Clock size={12} />
                                 {workout.time}
                              </div>
+                             {/* SHARE BUTTON */}
                              <button 
                                 onClick={() => shareWorkout(workout)}
                                 className="flex items-center gap-2 bg-green-500/10 text-green-500 px-3 py-1.5 rounded-full hover:bg-green-500 hover:text-white transition-all text-xs font-bold"

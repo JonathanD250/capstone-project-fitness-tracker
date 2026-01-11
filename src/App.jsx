@@ -11,21 +11,13 @@ function App() {
   return (
     <div className="min-h-screen text-white font-sans relative">
       
-      {/* --- GLOBAL BACKGROUND START --- */}
-      {/* 1. The Image */}
+      {/* Background Layer */}
       <div className="fixed inset-0 z-0">
-        <img 
-          src="/bg.png"  
-          alt="App Background" 
-          className="w-full h-full object-cover"
-        />
+        <img src="/bg.png" alt="Background" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-slate-900/90"></div>
       </div>
 
-      {/* 2. The Dark Overlay (Makes text readable) */}
-      <div className="fixed inset-0 z-0 bg-slate-900/90"></div>
-      {/* --- GLOBAL BACKGROUND END --- */}
-
-      {/* Main Content (Sits on top of the background) */}
+      {/* Content Layer */}
       <div className="relative z-10">
         <Routes>
           <Route path="/" element={<Home />} />
