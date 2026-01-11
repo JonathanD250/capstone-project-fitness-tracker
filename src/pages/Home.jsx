@@ -10,7 +10,7 @@ const Home = () => {
     latestWorkout: null
   });
 
-  const WEEKLY_GOAL = 10;
+  const WEEKLY_GOAL = 12;
 
   useEffect(() => {
     // 1. Fetch data from LocalStorage
