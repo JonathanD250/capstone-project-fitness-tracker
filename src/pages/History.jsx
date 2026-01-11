@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // <--- Import Link
-import { Calendar, Clock, Dumbbell, Trash2, ArrowLeft } from 'lucide-react'; // <--- Import ArrowLeft
+import { Link } from 'react-router-dom';
+import { 
+  Calendar, 
+  Clock, 
+  Dumbbell, 
+  Trash2, 
+  ArrowLeft, 
+  Share2 
+} from 'lucide-react';
 
 const History = () => {
   const [history, setHistory] = useState([]);
@@ -9,6 +16,17 @@ const History = () => {
     const savedWorkouts = JSON.parse(localStorage.getItem('workoutHistory')) || [];
     setHistory(savedWorkouts);
   }, []);
+
+  // --- SHARE FUNCTION ---
+  const shareWorkout = (workout) => {
+    const text = `🏋️‍♂️ *Workout Crushed!* %0A%0A` +
+                 `Exercise: *${workout.exercise}*%0A` +
+                 `Details: ${workout.sets} Sets x ${workout.reps} Reps%0A` +
+                 `Date: ${workout.date}%0A%0A` +
+                 `Logged via My Fitness Tracker 🚀`;
+    
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  };
 
   const clearHistory = () => {
     if(confirm("Are you sure you want to delete all logs?")) {
@@ -22,17 +40,15 @@ const History = () => {
       
       {/* --- HEADER WITH BACK ARROW --- */}
       <div className="flex items-center gap-4 mb-8 mt-4">
-        {/* Back Button */}
         <Link to="/" className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition text-white">
             <ArrowLeft size={24} />
         </Link>
         
         <div className="flex-1">
-            <h1 className="text-2xl font-bold">History</h1>
+            <h1 className="text-2xl font-bold text-white">History</h1>
             <p className="text-gray-400 text-xs">Your fitness journey</p>
         </div>
 
-        {/* Clear Button (Only shows if history exists) */}
         {history.length > 0 && (
             <button 
                 onClick={clearHistory}
@@ -74,11 +90,20 @@ const History = () => {
                             <span className="text-xs text-gray-400 uppercase tracking-wider">Reps</span>
                             <span className="text-lg font-mono font-bold text-blue-400">{workout.reps}</span>
                         </div>
-                        <div className="flex flex-col ml-auto text-right">
+                        
+                        {/* --- SHARE BUTTON NEXT TO STATS --- */}
+                        <div className="flex flex-col ml-auto items-end gap-2">
                              <div className="flex items-center gap-1 text-xs text-gray-500">
                                 <Clock size={12} />
                                 {workout.time}
                              </div>
+                             <button 
+                                onClick={() => shareWorkout(workout)}
+                                className="flex items-center gap-2 bg-green-500/10 text-green-500 px-3 py-1.5 rounded-full hover:bg-green-500 hover:text-white transition-all text-xs font-bold"
+                             >
+                                <Share2 size={14} />
+                                Share
+                             </button>
                         </div>
                     </div>
                 </div>
