@@ -1,181 +1,176 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { MapPin, Clock, Flame, Plus, Footprints } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, MapPin, Clock, Flame, Award } from 'lucide-react';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [isSmartTracking, setIsSmartTracking] = useState(true);
+  
+  // Dynamic Stats State
   const [stats, setStats] = useState({
-    calories: 0,
-    time: 0,
-    completed: 0,
-    latestWorkout: null
+    progress: 0,
+    duration: 0,
+    distance: 0
   });
 
-  // GOAL: Let's say the goal is 10 workouts per week
-  const WEEKLY_GOAL = 10;
+  const WEEKLY_GOAL = 12; // Example goal
 
   useEffect(() => {
-    // 1. Fetch data from LocalStorage
+    // 1. Get History
     const history = JSON.parse(localStorage.getItem('workoutHistory')) || [];
+    const count = history.length;
+
+    // 2. Calculate Stats (Estimations based on workout count)
+    // Assuming approx 45 mins and 3.5km per logged session
+    const calculatedDuration = count * 45; 
+    const calculatedDistance = (count * 3.5).toFixed(1); // 1 decimal place
     
-    // 2. Calculate Stats
-    // Logic: We estimate 150 calories and 20 mins per logged workout
-    const totalCalories = history.length * 150; 
-    const totalTime = history.length * 20; 
+    // Calculate Percentage (capped at 100%)
+    const percentage = Math.min(Math.round((count / WEEKLY_GOAL) * 100), 100);
 
     setStats({
-      calories: totalCalories,
-      time: totalTime,
-      completed: history.length,
-      latestWorkout: history[0] || null // Get the first item (newest)
+      progress: percentage,
+      duration: calculatedDuration,
+      distance: calculatedDistance
     });
   }, []);
 
-  // Helper to calculate progress percentage (capped at 100%)
-  const progressPercent = Math.min((stats.completed / WEEKLY_GOAL) * 100, 100);
-  const circumference = 2 * Math.PI * 24; // Circle math for SVG
-  const dashOffset = circumference - (progressPercent / 100) * circumference;
+  // --- GAUGE MATH ---
+  const radius = 80;
+  const circumference = 2 * Math.PI * radius;
+  const semiCircle = circumference / 2; 
+  const strokeDashoffset = semiCircle - (stats.progress / 100) * semiCircle;
 
   return (
-    <div className="p-6 pb-24">
-      {/* Header */}
-      <header className="mt-6 mb-8">
-        <h1 className="text-3xl font-bold">
-          Hi <span className="text-green-500">Kweku</span>,
-        </h1>
-        <h2 className="text-2xl font-light italic text-gray-400">
-          Welcome back!
-        </h2>
-      </header>
+    <div className="min-h-screen relative font-sans text-white pb-24 bg-slate-900">
+      
+      {/* 1. Background Image */}
+      <div className="fixed inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1000&auto=format&fit=crop" 
+          alt="Smart Tracking Background" 
+          className="w-full h-full object-cover opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/80 to-slate-900"></div>
+      </div>
 
-      {/* --- SECTION 1: MY HEALTH (Stats Row) --- */}
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-3 text-white">My Health</h3>
-        
-        <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 border border-white/5 flex justify-between items-center">
-            {/* Stats Group */}
-            <div className="flex space-x-6 text-center">
-                
-                {/* Calories */}
-                <div className="flex flex-col items-center">
-                   <div className="bg-orange-500/20 p-2 rounded-full mb-1 text-orange-500">
-                     <Flame size={20} fill="currentColor" />
-                   </div>
-                   <span className="text-xs text-gray-400">kcal</span>
-                   <span className="font-bold">{stats.calories}</span>
-                </div>
-
-                {/* Time */}
-                <div className="flex flex-col items-center">
-                   <div className="bg-blue-500/20 p-2 rounded-full mb-1 text-blue-500">
-                     <Clock size={20} />
-                   </div>
-                   <span className="text-xs text-gray-400">mins</span>
-                   <span className="font-bold">{stats.time}</span>
-                </div>
-
-                {/* Distance (Mocked for now as 'Workouts') */}
-                <div className="flex flex-col items-center">
-                   <div className="bg-green-500/20 p-2 rounded-full mb-1 text-green-500">
-                     <MapPin size={20} />
-                   </div>
-                   <span className="text-xs text-gray-400">count</span>
-                   <span className="font-bold">{stats.completed}</span>
-                </div>
-
-            </div>
-            
-            {/* Add Button */}
-            <Link to="/add-workout" className="flex flex-col items-center justify-center text-xs text-white hover:opacity-80 transition">
-                <div className="bg-white text-black rounded-full w-12 h-12 flex items-center justify-center mb-1 shadow-lg shadow-white/10">
-                    <Plus size={28} strokeWidth={3} />
-                </div>
-            </Link>
+      {/* 2. Header */}
+      <div className="relative z-10 p-6 pt-8 flex justify-between items-center">
+        <button onClick={() => navigate(-1)} className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition">
+             <ArrowLeft size={24} className="text-white" />
+        </button>
+        <div className="bg-white/10 p-2 rounded-full backdrop-blur-md">
+             <Link to="/profile" className="block w-8 h-8 bg-gray-300 rounded-full border-2 border-white overflow-hidden">
+                {/* User Avatar Placeholder */}
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Kweku" alt="User" />
+             </Link>
         </div>
       </div>
 
-      {/* --- SECTION 2: ACTIVE TASK (Latest Workout) --- */}
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-3 text-white">Active Task</h3>
-        
-        {stats.latestWorkout ? (
-            // CARD: Shows actual data if available
-            <div className="relative bg-gradient-to-r from-gray-800 to-gray-900 rounded-3xl p-6 border border-white/5 shadow-lg overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+      {/* 3. Main Content */}
+      <div className="relative z-10 px-6 mt-4">
+        <h2 className="text-xl text-gray-200 mb-4 font-light">Today</h2>
 
-                <div className="flex justify-between items-start relative z-10">
-                    <div>
-                        <h4 className="text-2xl font-bold mb-1 text-white capitalize">
-                            {stats.latestWorkout.exercise}
-                        </h4>
-                        <p className="text-xs text-gray-400 mb-6">
-                           {stats.latestWorkout.sets} Sets • {stats.latestWorkout.reps} Reps
-                        </p>
-                        
-                        <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full w-fit">
-                            <Flame size={14} className="text-orange-500" fill="currentColor" />
-                            <span className="text-xs font-bold">~150 kcal</span>
-                        </div>
-                    </div>
-
-                    {/* Progress Wheel (SVG based on sets goal) */}
-                    <div className="flex flex-col items-center">
-                        <div className="relative w-20 h-20">
-                            <svg className="w-full h-full transform -rotate-90">
-                                <circle cx="40" cy="40" r="36" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-gray-700" />
-                                <circle cx="40" cy="40" r="36" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-green-500" 
-                                    strokeDasharray={2 * Math.PI * 36}
-                                    strokeDashoffset={0} /* Full circle for active task */
-                                />
-                            </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-sm font-bold">Active</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        ) : (
-            // EMPTY STATE: Shows if no workouts exist
-            <div className="p-6 bg-white/5 rounded-3xl text-center border border-white/5 border-dashed">
-                <p className="text-gray-400 mb-2">No active tasks</p>
-                <Link to="/add-workout" className="text-green-500 text-sm font-bold underline">Start a workout</Link>
-            </div>
-        )}
-      </div>
-
-      {/* --- SECTION 3: PREVIOUS TASKS (Progress Wheel) --- */}
-      <div>
-         <h3 className="text-xl font-semibold mb-3 text-white">Previous Tasks</h3>
-         
-         <div className="bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-                {/* The "Wheel" */}
-                <div className="relative w-16 h-16">
-                    <svg className="w-full h-full transform -rotate-90">
-                        {/* Background Ring */}
-                        <circle cx="32" cy="32" r="24" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-gray-700" />
-                        {/* Progress Ring */}
-                        <circle cx="32" cy="32" r="24" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-yellow-500" 
-                             strokeDasharray={circumference}
-                             strokeDashoffset={dashOffset}
-                             strokeLinecap="round"
-                        />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center text-xs font-bold">
-                        {Math.round(progressPercent)}%
-                    </div>
-                </div>
-
-                <div>
-                    <p className="font-bold text-lg">{stats.completed} Completed</p>
-                    <p className="text-xs text-gray-400">Weekly Goal: {WEEKLY_GOAL}</p>
-                </div>
-            </div>
+        {/* --- GLASS CARD --- */}
+        <div className="p-6 pb-24 min-h-screen">
             
-            <div className="bg-white/10 p-2 rounded-full">
-                <Footprints className="text-gray-400" size={20}/>
+            {/* Title & Icons */}
+            <div className="text-center mb-6">
+                <h1 className="text-3xl font-bold mb-4">Fitness Status</h1>
+                <div className="flex justify-center gap-4">
+                    <div className="bg-white p-2.5 rounded-full text-black shadow-lg"><MapPin size={20} /></div>
+                    <div className="bg-white p-2.5 rounded-full text-black shadow-lg"><Clock size={20} /></div>
+                    <div className="bg-white p-2.5 rounded-full text-black shadow-lg"><Flame size={20} /></div>
+                    <div className="bg-white p-2.5 rounded-full text-black shadow-lg"><Award size={20} /></div>
+                </div>
             </div>
-         </div>
+
+            {/* Track Record Label */}
+            <div className="flex items-center gap-2 mb-2 justify-center">
+                <span className="font-bold text-lg">Track Record</span>
+                <span className="bg-black/60 text-green-400 text-[10px] px-2 py-1 rounded-full flex items-center gap-1 border border-green-500/30">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div> Auto mode
+                </span>
+            </div>
+
+            {/* --- THE GAUGE (Exact match to design) --- */}
+            <div className="relative h-56 flex items-center justify-center mb-2 -mt-4">
+                 <svg className="w-72 h-72 transform -rotate-180 overflow-visible">
+                    <defs>
+                        <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#fbbf24" /> {/* Yellow */}
+                            <stop offset="100%" stopColor="#f59e0b" /> {/* Orange-Yellow */}
+                        </linearGradient>
+                    </defs>
+
+                    {/* 1. Gray Background Track (Dashed) */}
+                    <circle 
+                        cx="144" cy="144" r={radius} 
+                        fill="none" 
+                        stroke="#4b5563" // Gray-600
+                        strokeWidth="18" 
+                        strokeDasharray="2 4" /* Specific dash pattern to match image */
+                        strokeOpacity="0.5"
+                        style={{ strokeDasharray: `${semiCircle} ${circumference}` }} // Cut to semi-circle
+                    />
+                    
+                    {/* 2. Yellow Progress Track (Solid) */}
+                    <circle 
+                        cx="144" cy="144" r={radius} 
+                        fill="none" 
+                        stroke="url(#gaugeGradient)" 
+                        strokeWidth="18"
+                        strokeLinecap="round"
+                        strokeDasharray={`${semiCircle} ${circumference}`} 
+                        strokeDashoffset={strokeDashoffset}
+                        className="drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] transition-all duration-1000 ease-out"
+                    />
+                 </svg>
+                 
+                 {/* Text Inside Gauge */}
+                 <div className="absolute top-28 text-center">
+                    <span className="block text-5xl font-bold tracking-tighter">{stats.progress}%</span>
+                    <span className="text-gray-400 text-lg font-medium">Progress</span>
+                 </div>
+            </div>
+
+            {/* Stats Row */}
+            <div className="space-y-4 mb-8 px-2">
+                {/* Duration Row */}
+                <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-white/10 rounded-full p-2 text-white"><Clock size={18} /></div>
+                        <span className="font-medium text-gray-300">Duration</span>
+                    </div>
+                    <span className="text-white font-mono text-lg">{stats.duration} mins</span>
+                </div>
+
+                {/* Distance Row */}
+                <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-white/10 rounded-full p-2 text-white"><MapPin size={18} /></div>
+                        <span className="font-medium text-gray-300">Distance</span>
+                    </div>
+                    <span className="text-white font-mono text-lg">{stats.distance} Km</span>
+                </div>
+            </div>
+
+            {/* Smart Tracking Toggle */}
+            <div className="bg-black/40 rounded-full p-2 flex justify-between items-center pl-5 pr-2 h-16 border border-white/5">
+                <span className="text-gray-200 font-bold">Smart Tracking</span>
+                
+                <div className="flex items-center gap-3">
+                    <span className="font-bold text-sm text-green-400">On</span>
+                    <button 
+                        onClick={() => setIsSmartTracking(!isSmartTracking)}
+                        className={`w-14 h-8 rounded-full flex items-center transition-colors duration-300 px-1 ${isSmartTracking ? 'bg-green-500' : 'bg-gray-700'}`}
+                    >
+                        <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${isSmartTracking ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
       </div>
 
     </div>

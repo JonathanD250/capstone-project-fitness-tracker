@@ -1,38 +1,42 @@
-import AddWorkout from './pages/AddWorkout';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Dashboard from './pages/Dashboard';
-import History from './pages/History';
+import Home from './pages/Home';       
+import Dashboard from './pages/Dashboard'; 
 import Profile from './pages/Profile';
+import AddWorkout from './pages/AddWorkout';
+import History from './pages/History';
+import VideoLibrary from './pages/VideoLibrary'; 
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-900 text-white pb-24 font-sans relative">
+    <div className="min-h-screen text-white font-sans relative">
       
-      {/* 1. Background Image Layer */}
+      {/* --- GLOBAL BACKGROUND START --- */}
+      {/* 1. The Image */}
       <div className="fixed inset-0 z-0">
         <img 
-          src="/bg.png"
-          alt="Fitness Background" 
-          className="w-full h-full object-cover opacity-50"
-          onError={(e) => {e.target.style.display='none'}} 
+          src="/bg.png"  
+          alt="App Background" 
+          className="w-full h-full object-cover"
         />
       </div>
 
-      {/* 2. Gradient Overlay Layer */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-slate-900/80 to-slate-900 z-0 pointer-events-none"></div>
+      {/* 2. The Dark Overlay (Makes text readable) */}
+      <div className="fixed inset-0 z-0 bg-slate-900/90"></div>
+      {/* --- GLOBAL BACKGROUND END --- */}
 
-      {/* 3. Main Content Layer */}
+      {/* Main Content (Sits on top of the background) */}
       <div className="relative z-10">
         <Routes>
-          <Route path="/add-workout" element={<AddWorkout />} />
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/history" element={<History />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/videos" element={<VideoLibrary />} /> 
           <Route path="/profile" element={<Profile />} />
+          <Route path="/add-workout" element={<AddWorkout />} />
+          <Route path="/history" element={<History />} />
         </Routes>
       </div>
-
-      {/* Bottom Navigation */}
+      
       <Navbar /> 
     </div>
   )

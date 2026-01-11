@@ -74,7 +74,7 @@ const AddWorkout = () => {
   };
 
   return (
-    <div className="p-6 pt-8 min-h-screen bg-slate-900 text-white">
+    <div className="p-6 pt-8 min-h-screen">
       <div className="flex items-center mb-8">
         <button onClick={() => navigate(-1)} className="bg-white/10 p-2 rounded-full mr-4 hover:bg-white/20">
           <ArrowLeft size={24} />
