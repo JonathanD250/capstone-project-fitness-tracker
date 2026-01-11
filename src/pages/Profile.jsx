@@ -11,17 +11,17 @@ const Profile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null); 
 
-  // --- STATE: LOAD FROM LOCAL STORAGE OR USE DEFAULT ---
+  // --- PERSONALIZED STATE ---
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('userProfile');
     return savedUser ? JSON.parse(savedUser) : {
-      name: "Jonathan Cole",
-      email: "colej@gmail.com",
-      phone: "+233234567891",
+      name: "Kweku Darko", 
+      email: "kwekud@gmail.com",   
+      phone: "+233241645357",     
       age: "26",
       weight: "78",
       height: "180",
-      image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=1000&auto=format&fit=crop"
+      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kweku" 
     };
   });
 
